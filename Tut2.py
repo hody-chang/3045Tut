@@ -2,10 +2,10 @@ import numpy as np
 from numpy import sin, cos
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
-from collections import deque
 
-n_inter = 1000
-dt = 0.005
+
+n_inter = 10000
+dt = 0.0005
 theta = np.zeros(n_inter)
 t = np.arange(0, n_inter * dt, dt)
 
@@ -31,7 +31,6 @@ plt.show()
 
 # Animation
 
-
 fig = plt.figure(figsize=(5, 4))
 ax = fig.add_subplot(autoscale_on=False, xlim=(-1, 1), ylim=(-1, 1.))
 ax.set_aspect('equal')
@@ -42,16 +41,12 @@ trace, = ax.plot([], [], '.-', lw=1, ms=2)
 time_template = 'time = %.1fs'
 time_text = ax.text(0.05, 0.9, '', transform=ax.transAxes)
 
-
 def animate(i):
-    thisx = [0, d[i, 0]]
-    thisy = [0, d[i, 1]]
 
-    line.set_data(thisx, thisy)
+    line.set_data([0, d[i, 0]], [0, d[i, 1]])
     time_text.set_text(time_template % (i*dt))
     return line, trace, time_text
 
-
 animation = FuncAnimation(
-    fig, animate, len(d), interval=dt*1000, blit=True)
+    fig, animate, len(d), interval=dt*100, blit=True)
 plt.show()
