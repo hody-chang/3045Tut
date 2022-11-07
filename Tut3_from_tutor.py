@@ -33,6 +33,7 @@ def hydrogen_wavefunc(E, r0, r_max, delta_t):
         r = i * delta_t
         wavefunc.append(a0 + a1 * r + a2 * r ** 2 + a3 * r ** 3)
         v.append(a1 + 2 * a2 * r + 3 * a3 * r ** 2)
+        
     ###########################################################################
 
     ########### obtain the remaining results by using PC method ###############
@@ -91,9 +92,29 @@ plt.plot(r_arr, analytical_wavefuncs[1])
 plt.xlabel('r')
 plt.ylabel('R(r)')
 plt.show()
-###############################################################################
+#################Alkia atom#########################
+
+def v_r(r, r0, alpha_a):
+    res = np.empty(r.shape)
+    for i in r:
+        if i <= r0:
+            np.append(res, np.inf)
+        else:
+            np.append(res, -2 / r - alpha_a / (r ** 2 + r0 ** 2) ** 2)
+    return res
 
 
+def laplace_method(r0, alpha_a, N, Delta_r):
+    r = r0 + np.arange(0, N) * Delta_r
+    alpha = (Delta_r / r) - 1
+    beta = 2 + v_r(r, r0, alpha_a) * Delta_r ** 2
+    gamma = - (Delta_r / r) - 1
+    delta = np.append(1, (alpha[1:]) / gamma[:-1]).cumprod()
+    d = beta
+    e = np.append(1, (alpha[1:]) / gamma[:-1])
+    M = np.diag(d) + np.diag(e[:-1], k=1) + np.diag(e[1:], k=-1)
+    res = np.linalg.eig(M)
+    return res[0] / (Delta_r ** 2), res[1] * delta[None, :]
 
 
 
